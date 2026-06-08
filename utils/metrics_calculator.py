@@ -138,7 +138,7 @@ def calculate_overall_kpis(meter_df: pd.DataFrame, production_df: pd.DataFrame) 
     missing_count = meter_df["power_kw"].isna().sum()
     data_completeness = (1 - missing_count / len(meter_df)) * 100 if len(meter_df) > 0 else 100
 
-    avg_running_rate = meter_df["is_running"].mean() * 100
+    avg_running_rate = meter_df["is_running"].mean() * 100 if len(meter_df) > 0 else 0
 
     return {
         "total_power_kwh": round(total_power, 2),
