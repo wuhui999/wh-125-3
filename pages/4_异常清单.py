@@ -33,11 +33,11 @@ st.set_page_config(
 with st.sidebar:
     st.title("⚡ 能耗分析看板")
     st.markdown("---")
-    st.page_link("app.py", label="📊 总览页", icon="📊")
-    st.page_link("pages/1_数据导入.py", label="📤 数据导入", icon="📤")
-    st.page_link("pages/2_产线分析.py", label="🏭 产线分析", icon="🏭")
-    st.page_link("pages/3_班组对比.py", label="👥 班组对比", icon="👥")
-    st.page_link("pages/4_异常清单.py", label="⚠️ 异常清单", icon="⚠️")
+    st.page_link("app.py", label="📊 总览页")
+    st.page_link("pages/1_数据导入.py", label="📤 数据导入")
+    st.page_link("pages/2_产线分析.py", label="🏭 产线分析")
+    st.page_link("pages/3_班组对比.py", label="👥 班组对比")
+    st.page_link("pages/4_异常清单.py", label="⚠️ 异常清单")
 
 st.title("⚠️ 异常清单")
 st.markdown("---")
@@ -107,11 +107,12 @@ with col1:
         type_counts = anomaly_df.groupby("anomaly_name").size().reset_index(name="count")
         type_counts = type_counts.sort_values("count", ascending=True)
 
-        fig_type = px.barh(
+        fig_type = px.bar(
             type_counts,
             y="anomaly_name",
             x="count",
             color="count",
+            orientation="h",
             color_continuous_scale="Reds",
             text_auto=True,
             labels={"anomaly_name": "异常类型", "count": "异常次数"},
@@ -266,7 +267,7 @@ else:
 
     st.dataframe(
         display_df.style
-        .applymap(style_severity, subset=["严重程度"])
+        .map(style_severity, subset=["严重程度"])
         .format({
             "偏离程度 (%)": "{:+.1f}",
         }),

@@ -36,11 +36,11 @@ if "data" not in st.session_state:
 with st.sidebar:
     st.title("⚡ 能耗分析看板")
     st.markdown("---")
-    st.page_link("app.py", label="📊 总览页", icon="📊")
-    st.page_link("pages/1_数据导入.py", label="📤 数据导入", icon="📤")
-    st.page_link("pages/2_产线分析.py", label="🏭 产线分析", icon="🏭")
-    st.page_link("pages/3_班组对比.py", label="👥 班组对比", icon="👥")
-    st.page_link("pages/4_异常清单.py", label="⚠️ 异常清单", icon="⚠️")
+    st.page_link("app.py", label="📊 总览页")
+    st.page_link("pages/1_数据导入.py", label="📤 数据导入")
+    st.page_link("pages/2_产线分析.py", label="🏭 产线分析")
+    st.page_link("pages/3_班组对比.py", label="👥 班组对比")
+    st.page_link("pages/4_异常清单.py", label="⚠️ 异常清单")
     st.markdown("---")
     st.caption("帮助能源管理员发现产线电耗异常")
 
@@ -199,11 +199,12 @@ with col2:
         type_counts = type_counts.sort_values("count", ascending=True)
         type_counts["color"] = type_counts["severity"].apply(get_severity_color)
 
-        fig_anomaly = px.barh(
+        fig_anomaly = px.bar(
             type_counts,
             y="anomaly_name",
             x="count",
             color="severity",
+            orientation="h",
             color_discrete_map={"高": "#ff4b4b", "中": "#ffaa00", "低": "#2ecc71"},
             text_auto=True,
         )

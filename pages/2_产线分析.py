@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -29,11 +30,11 @@ st.set_page_config(
 with st.sidebar:
     st.title("⚡ 能耗分析看板")
     st.markdown("---")
-    st.page_link("app.py", label="📊 总览页", icon="📊")
-    st.page_link("pages/1_数据导入.py", label="📤 数据导入", icon="📤")
-    st.page_link("pages/2_产线分析.py", label="🏭 产线分析", icon="🏭")
-    st.page_link("pages/3_班组对比.py", label="👥 班组对比", icon="👥")
-    st.page_link("pages/4_异常清单.py", label="⚠️ 异常清单", icon="⚠️")
+    st.page_link("app.py", label="📊 总览页")
+    st.page_link("pages/1_数据导入.py", label="📤 数据导入")
+    st.page_link("pages/2_产线分析.py", label="🏭 产线分析")
+    st.page_link("pages/3_班组对比.py", label="👥 班组对比")
+    st.page_link("pages/4_异常清单.py", label="⚠️ 异常清单")
 
 st.title("🏭 产线分析")
 st.markdown("---")
@@ -234,10 +235,39 @@ with col1:
         y="power_consumption_kwh",
         color="team",
         size="running_hours",
-        hover_data=["date", "shift", "unit_energy_consumption"],
-        trendline="ols",
+        hover_data={
+            "date": True,
+            "shift": True,
+            "unit_energy_consumption": ":.4f",
+            "team": False,
+            "output_quantity": False,
+            "power_consumption_kwh": False,
+        },
+        labels={
+            "output_quantity": "产量",
+            "power_consumption_kwh": "耗电量 (kWh)",
+            "running_hours": "运行时长 (h)",
+            "date": "日期",
+            "shift": "班次",
+            "unit_energy_consumption": "单位能耗 (kWh/单位)",
+            "team": "班组",
+        },
         color_discrete_sequence=px.colors.qualitative.Set2,
     )
+
+    valid = line_prod[["output_quantity", "power_consumption_kwh"]].dropna()
+    if len(valid) >= 2:
+        coef = np.polyfit(valid["output_quantity"], valid["power_consumption_kwh"], 1)
+        x_line = np.linspace(valid["output_quantity"].min(), valid["output_quantity"].max(), 100)
+        y_line = np.polyval(coef, x_line)
+        fig_scatter.add_trace(go.Scatter(
+            x=x_line,
+            y=y_line,
+            mode="lines",
+            name="趋势线",
+            line=dict(color="#e74c3c", dash="dash", width=2),
+        ))
+
     fig_scatter.update_layout(
         xaxis_title="产量",
         yaxis_title="耗电量 (kWh)",

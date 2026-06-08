@@ -5,67 +5,36 @@ from typing import Dict, Optional
 
 
 def set_plotly_chinese_font(fig):
-    chinese_font = "Microsoft YaHei"
+    chinese_font = (
+        "Microsoft YaHei, SimHei, PingFang SC, "
+        "Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif"
+    )
+    font_dict = {"family": chinese_font}
 
     fig.update_layout(
-        font={
-            "family": chinese_font,
-            "size": 12,
-        },
-        legend={
-            "font": {
-                "family": chinese_font,
-            },
-        },
+        font={**font_dict, "size": 12},
+        title_font=font_dict,
+        legend_font=font_dict,
+        hoverlabel={"font": font_dict},
     )
 
-    for i in range(1, 20):
-        xaxis_key = f"xaxis{i}" if i > 1 else "xaxis"
-        yaxis_key = f"yaxis{i}" if i > 1 else "yaxis"
-
-        try:
-            xaxis_config = getattr(fig.layout, xaxis_key)
-        except AttributeError:
-            xaxis_config = None
-
-        try:
-            yaxis_config = getattr(fig.layout, yaxis_key)
-        except AttributeError:
-            yaxis_config = None
-
-        if xaxis_config is not None:
-            fig.update_layout({
-                xaxis_key: {
-                    "titlefont": {"family": chinese_font},
-                    "tickfont": {"family": chinese_font},
-                }
-            })
-
-        if yaxis_config is not None:
-            fig.update_layout({
-                yaxis_key: {
-                    "titlefont": {"family": chinese_font},
-                    "tickfont": {"family": chinese_font},
-                }
-            })
+    fig.update_xaxes(title_font=font_dict, tickfont=font_dict)
+    fig.update_yaxes(title_font=font_dict, tickfont=font_dict)
+    fig.update_annotations(font=font_dict)
 
     try:
-        annot_config = fig.layout.annotations
-        if annot_config is not None and len(annot_config) > 0:
-            for ann in annot_config:
-                ann.font = {"family": chinese_font}
-    except (AttributeError, TypeError):
+        fig.update_coloraxes(
+            colorbar=dict(title_font=font_dict, tickfont=font_dict),
+        )
+    except (ValueError, AttributeError):
         pass
 
-    try:
-        for trace in fig.data:
-            try:
-                if trace.textfont is not None:
-                    trace.textfont = {"family": chinese_font}
-            except AttributeError:
-                continue
-    except Exception:
-        pass
+    for trace in fig.data:
+        try:
+            if getattr(trace, "textfont", None) is not None:
+                trace.update(textfont=font_dict)
+        except (AttributeError, TypeError, ValueError):
+            continue
 
     return fig
 

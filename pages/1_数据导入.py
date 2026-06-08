@@ -25,11 +25,11 @@ st.set_page_config(
 with st.sidebar:
     st.title("⚡ 能耗分析看板")
     st.markdown("---")
-    st.page_link("app.py", label="📊 总览页", icon="📊")
-    st.page_link("pages/1_数据导入.py", label="📤 数据导入", icon="📤")
-    st.page_link("pages/2_产线分析.py", label="🏭 产线分析", icon="🏭")
-    st.page_link("pages/3_班组对比.py", label="👥 班组对比", icon="👥")
-    st.page_link("pages/4_异常清单.py", label="⚠️ 异常清单", icon="⚠️")
+    st.page_link("app.py", label="📊 总览页")
+    st.page_link("pages/1_数据导入.py", label="📤 数据导入")
+    st.page_link("pages/2_产线分析.py", label="🏭 产线分析")
+    st.page_link("pages/3_班组对比.py", label="👥 班组对比")
+    st.page_link("pages/4_异常清单.py", label="⚠️ 异常清单")
 
 st.title("📤 数据导入")
 st.markdown("---")
