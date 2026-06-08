@@ -108,7 +108,7 @@ col1, col2 = st.columns([3, 2])
 with col1:
     st.markdown("### 📈 用电趋势分析")
 
-    fig = make_subplots(rows=2, cols=1, shared_xaxis=True,
+    fig = make_subplots(rows=2, cols=1, shared_xaxes=True,
                         subplot_titles=("日用电量趋势", "空载电耗占比"),
                         vertical_spacing=0.1)
 

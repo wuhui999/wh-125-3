@@ -5,47 +5,68 @@ from typing import Dict, Optional
 
 
 def set_plotly_chinese_font(fig):
+    chinese_font = "Microsoft YaHei"
+
     fig.update_layout(
         font={
-            "family": "Microsoft YaHei, SimHei, Arial Unicode MS, sans-serif",
+            "family": chinese_font,
             "size": 12,
-        },
-        xaxis={
-            "titlefont": {
-                "family": "Microsoft YaHei, SimHei, Arial Unicode MS, sans-serif",
-            },
-            "tickfont": {
-                "family": "Microsoft YaHei, SimHei, Arial Unicode MS, sans-serif",
-            },
-        },
-        yaxis={
-            "titlefont": {
-                "family": "Microsoft YaHei, SimHei, Arial Unicode MS, sans-serif",
-            },
-            "tickfont": {
-                "family": "Microsoft YaHei, SimHei, Arial Unicode MS, sans-serif",
-            },
         },
         legend={
             "font": {
-                "family": "Microsoft YaHei, SimHei, Arial Unicode MS, sans-serif",
+                "family": chinese_font,
             },
         },
-        annotations=[{
-            "font": {
-                "family": "Microsoft YaHei, SimHei, Arial Unicode MS, sans-serif",
-            },
-        }],
     )
-    if hasattr(fig, "update_traces"):
+
+    for i in range(1, 20):
+        xaxis_key = f"xaxis{i}" if i > 1 else "xaxis"
+        yaxis_key = f"yaxis{i}" if i > 1 else "yaxis"
+
         try:
-            fig.update_traces(
-                textfont={
-                    "family": "Microsoft YaHei, SimHei, Arial Unicode MS, sans-serif",
+            xaxis_config = getattr(fig.layout, xaxis_key)
+        except AttributeError:
+            xaxis_config = None
+
+        try:
+            yaxis_config = getattr(fig.layout, yaxis_key)
+        except AttributeError:
+            yaxis_config = None
+
+        if xaxis_config is not None:
+            fig.update_layout({
+                xaxis_key: {
+                    "titlefont": {"family": chinese_font},
+                    "tickfont": {"family": chinese_font},
                 }
-            )
-        except Exception:
-            pass
+            })
+
+        if yaxis_config is not None:
+            fig.update_layout({
+                yaxis_key: {
+                    "titlefont": {"family": chinese_font},
+                    "tickfont": {"family": chinese_font},
+                }
+            })
+
+    try:
+        annot_config = fig.layout.annotations
+        if annot_config is not None and len(annot_config) > 0:
+            for ann in annot_config:
+                ann.font = {"family": chinese_font}
+    except (AttributeError, TypeError):
+        pass
+
+    try:
+        for trace in fig.data:
+            try:
+                if trace.textfont is not None:
+                    trace.textfont = {"family": chinese_font}
+            except AttributeError:
+                continue
+    except Exception:
+        pass
+
     return fig
 
 
